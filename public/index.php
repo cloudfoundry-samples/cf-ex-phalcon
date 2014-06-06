@@ -16,11 +16,14 @@ try {
 
     //Set the database service
     $di->set('db', function(){
+        $services = json_decode($_ENV['VCAP_SERVICES'], true);
+        $service = $services['cleardb'][0]; // pick the first service
         return new \Phalcon\Db\Adapter\Pdo\Mysql(array(
-            "host" => "localhost",
-            "username" => "root",
-            "password" => "secret",
-            "dbname" => "test_db"
+            "host" => $service['credentials']['hostname'],
+            "port" => $service['credentials']['port'],
+            "username" => $service['credentials']['username'],
+            "password" => $service['credentials']['password'],
+            "dbname" => $service['credentials']['name']
         ));
     });
 
