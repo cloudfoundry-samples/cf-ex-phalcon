@@ -13,7 +13,7 @@ Running on CloudFoundry
 
 Here are the changes for running the standrd Phalcon Tutorial app on CloudFoundry.
 
-  - Pull credentials from VCAP_SERVICES (use json_decode), setup \Phalcon\Db\Adapter\Pdo\Mysql or other with them.
+  - [Pull credentials from VCAP_SERVICES](https://github.com/dmikusa-pivotal/cf-ex-phalcon/blob/master/public/index.php#L19) (use json_decode), setup \Phalcon\Db\Adapter\Pdo\Mysql or other with them.
   - Remove `.htaccess` files.  These are not needed with the [cf-php-build-pack].
   - Add a manifest.yml file.  Not strictly necessary, but makes pushing easier.
   - Add a `.bp-config/options.json` file.  This is necessary to enable the phalcon extension.
