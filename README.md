@@ -1,23 +1,38 @@
-Phalcon Tutorial
-================
+# Phalcon Tutorial
 
-Phalcon PHP is a web framework delivered as a C extension providing high
-performance and lower resource consumption.
+Phalcon PHP is a web framework delivered as a C extension providing high performance and lower resource consumption.
 
-This is a very simple tutorial to understand the basis of work with Phalcon.
+This explains how to run the [Phalcon Basic Tutorial](https://docs.phalcon.io/4.0/en/tutorial-basic) on Cloud Foundry.
 
-Check out a explanation article: http://phalconphp.com/documentation/tutorial
+To get started, either complete the basic tutorial manually or [download the final product(https://github.com/phalcon/tutorial). In either case, when done you should have a directory that looks like this:
 
-Running on CloudFoundry
-=======================
+```bash
+total 24
+-rw-r--r--  1 piccolo  wheel  1244 Mar  3 16:10 README.md
+drwxr-xr-x@ 5 piccolo  staff   160 Nov 22  2018 app
+-rw-r--r--@ 1 piccolo  staff   614 Nov 22  2018 boxfile.yml
+drwxr-xr-x@ 4 piccolo  staff   128 Nov 22  2018 docs
+-rw-r--r--  1 piccolo  wheel   102 Mar  3 16:01 manifest.yml
+drwxr-xr-x@ 4 piccolo  staff   128 Nov 22  2018 public
+drwxr-xr-x@ 4 piccolo  staff   128 Nov 22  2018 storage
+```
 
-Here are the changes for running the standrd Phalcon Tutorial app on CloudFoundry.
+# Running on CloudFoundry
 
-  - [Pull credentials from VCAP_SERVICES](https://github.com/cloudfoundry-samples/cf-ex-phalcon/blob/master/public/index.php#L19) (use json_decode), setup \Phalcon\Db\Adapter\Pdo\Mysql or other with them.
-  - Remove `.htaccess` files.  These are not needed with the [php-buildpack].
-  - Add a manifest.yml file.  Not strictly necessary, but makes pushing easier.
-  - Add a `.bp-config/options.json` file.  This is necessary to enable the phalcon extension.
-  - Add `.bp-config/httpd/extra/httpd-php.conf` to override the build pack's default HTTPD's PHP configuration with one that will provide us with pretty url's for Phalcon.  This is essentially the rules that were in the `.htaccess` files combined into this file (with some slight adjustments).
+To run on Cloud Foundry, we need to make the following changes:
 
+1. If you don't have one already, create a MySQL service.  With Pivotal Web Services, the following command will create a free MySQL database through [ClearDb].
+
+   ```bash
+   cf create-service cleardb spark mysql
+   ```
+
+1. If you downloaded the complete code, you need to create the `users` table as [described in the tutorial](https://docs.phalcon.io/4.0/en/tutorial-basic#creating-a-model). You may use [PHPMyAdmin](https://github.com/cloudfoundry-samples/cf-ex-phpmyadmin/tree/php-cnb-compatible).
+
+1. Edit `public/index.php`, change the line `"dbname"   => "gonano"` to be `"dbname"   => getenv('DATA_MYSQL_NAME')`. This will load the DB name from the environment variables, like the other DB configuration.
+
+1. Run `cf push` to deploy the application on Cloud Foundry.
+
+The application should pull it's database configuration from environment variables, which are set in the `.profile` script. The values of these pull dynamically from `VCAP_SERVICES` which is populated by the platform with information from all bound services.
 
 [php-buildpack]: https://github.com/cloudfoundry/php-buildpack
